@@ -1,5 +1,6 @@
 extern crate convex_hull;
 use convex_hull::gift_wrapping::*;
+use convex_hull::point_parser::*;
 
 fn main() {
     let points = match get_points_from_stdin() {
@@ -12,5 +13,3 @@ fn main() {
         println!("{:?}", p);
     }
 }
-
-

@@ -3,10 +3,10 @@
 ## Introduction
 
 I am a big fan of *learn-by-doing*. While I was learning Rust Programming
-Language, I decided to solve common computer science problems in the language,
-possibly implementing different algorithms for each challenge. This helps me
-both keep my general computer science knowledge up-to-date and get the hang of
-the language.
+Language, I decided to solve common computer science problems using the
+language, possibly implementing different algorithms for each challenge. This
+helps me both keep my general computer science knowledge up-to-date and get the
+hang of the language.
 
 ## Resources
 

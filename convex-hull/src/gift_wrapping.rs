@@ -1,8 +1,7 @@
-//! The `gift_wrapping` crate implements gift-wrapping convex hull algorithm.
-//! The crate provides `get_points_from_stdin` function to parse points from
-//! standard input. The crate implements the algorithm using two different
-//! approach. One adopts classical looping and the other makes use of idiomatic
-//! rust through iterator adaptors.
+//! This module implements gift-wrapping convex hull algorithm.
+//! The module implements the algorithm using two different approach. One adopts
+//! classical looping and the other makes use of idiomatic rust through iterator
+//! adaptors.
 //!
 //! # Examples
 //!
@@ -28,53 +27,6 @@
 //! assert_eq!(convex_hull, Some(vec![&(0.0, 0.0), &(4.0, 4.0),
 //! &(3.0, 6.0), &(-3.0, 6.0), &(-4.0, 4.0)]));
 //! ```
-
-use std::io;
-use std::io::prelude::*;
-
-// This is how we do macros in Rust.
-// This provides similar functionality as `sscanf` in C.
-macro_rules! sscan {
-    ($string:expr, $trim:expr, $sep:expr, $( $x:ty ),+) => {{
-        let mut iter = $string.trim_matches($trim).split($sep);
-        ($(iter.next().and_then(|word| word.trim().parse::<$x>().ok())
-           .unwrap(),)*)
-    }}
-}
-
-/// Reads and parse `f32` points from standard input.
-pub fn get_points_from_stdin() -> Result<(Vec<(f32, f32)>), String> {
-   /*
-    * Parse input to extract points.
-    */
-    let mut points: Vec<(f32, f32)> = vec![];
-    let stdin = io::stdin();
-    for line in stdin.lock().lines() {
-        let trim: &[_] = &[' ', '(', ')'];
-        let string = line.unwrap();
-        let point = sscan!(string, trim, ',', f32, f32);
-        points.push(point);
-    }
-    if points.len() > 0 {
-        Ok(points)
-    } else {
-        Err("Can not parse points from stdin".to_owned())
-    }
-}
-
-fn find_bottommost_point(points: &[(f32, f32)]) -> Option<&(f32, f32)> {
-    if points.len() < 1 {
-        None
-    } else {
-        let mut b = &points[0];
-        for p in &points[1..] {
-            if b.1 > p.1 {
-                b = p;
-            }
-        }
-        Some(b)
-    }
-}
 
 /// Classical implementation of gift-wrapping algorithm.
 /// Finds convex hull for given points.
@@ -229,4 +181,42 @@ pub fn do_gift_wrapping_idiomatic(points: &[(f32, f32)])
         convex.push(o);
     }
     Some(convex)
+}
+
+fn find_bottommost_point(points: &[(f32, f32)]) -> Option<&(f32, f32)> {
+    if points.len() < 1 {
+        None
+    } else {
+        let mut b = &points[0];
+        for p in &points[1..] {
+            if b.1 > p.1 {
+                b = p;
+            }
+        }
+        Some(b)
+    }
+}
+
+// Unit tests for the module.
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_do_gift_wrapping_classic() {
+        let v  = vec![(0.0, 0.0), (0.0, 4.0), (4.0, 4.0), (1.0, 4.0), (0.0, 2.0),
+                (3.0, 6.0), (-3.0, 6.0), (-4.0, 4.0), (1.0, 5.4), (-1.0, 3.0)];
+        let convex_hull = do_gift_wrapping_classic(&v);
+        assert_eq!(convex_hull, Some(vec![&(0.0, 0.0), &(4.0, 4.0),
+        &(3.0, 6.0), &(-3.0, 6.0), &(-4.0, 4.0)]));
+    }
+
+    #[test]
+    fn test_do_gift_wrapping_idiomatic() {
+        let v  = vec![(0.0, 0.0), (0.0, 4.0), (4.0, 4.0), (1.0, 4.0), (0.0, 2.0),
+                (3.0, 6.0), (-3.0, 6.0), (-4.0, 4.0), (1.0, 5.4), (-1.0, 3.0)];
+        let convex_hull = do_gift_wrapping_idiomatic(&v);
+        assert_eq!(convex_hull, Some(vec![&(0.0, 0.0), &(4.0, 4.0),
+        &(3.0, 6.0), &(-3.0, 6.0), &(-4.0, 4.0)]));
+    }
 }
